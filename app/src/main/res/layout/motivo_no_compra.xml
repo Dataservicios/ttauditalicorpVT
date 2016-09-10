@@ -1,0 +1,161 @@
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView"
+    tool:contetext=".Encuesta"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:weightSum="1"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/lyControles">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Motivo no compra"
+                android:id="@+id/tvPregunta" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/lyOpenClose">
+
+                    <RadioGroup
+                        android:id="@+id/rgOpt1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentLeft="true"
+                        android:layout_above="@+id/fbplacename"
+                        android:visibility="visible"
+                        android:clickable="true">
+
+                        <RadioButton
+                            android:id="@+id/rbA1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:tag="a"
+                            android:text="No recibe llamadas" />
+
+                        <RadioButton
+                            android:id="@+id/rbB1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No le gusta venta telefónica"
+                            android:tag="b"
+                            android:enabled="true" />
+
+
+                        <RadioButton
+                            android:id="@+id/rbC1"
+                            android:layout_width="wrap_content"
+                            android:tag="c"
+                            android:layout_height="wrap_content"
+                            android:text="Desea vendedor de campo" />
+
+                        <RadioButton
+                            android:id="@+id/rbD1"
+                            android:layout_width="wrap_content"
+                            android:tag="d"
+                            android:layout_height="wrap_content"
+                            android:text="Tiene un reclamo pendiente" />
+
+
+                        <RadioButton
+                            android:id="@+id/rbE1"
+                            android:layout_width="wrap_content"
+                            android:tag="e"
+                            android:layout_height="wrap_content"
+                            android:text="Compró a Mayorista/Codistribuidor" />
+
+
+                        <RadioButton
+                            android:id="@+id/rbG1"
+                            android:layout_width="wrap_content"
+                            android:tag="g"
+                            android:layout_height="wrap_content"
+                            android:text="Cambió razón social" />
+
+
+                        <RadioButton
+                            android:id="@+id/rbF1"
+                            android:layout_width="wrap_content"
+                            android:tag="f"
+                            android:layout_height="wrap_content"
+                            android:text="Otros" />
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="40dp"
+                            android:inputType="textMultiLine"
+                            android:ems="10"
+                            android:enabled="true"
+                            android:visibility="invisible"
+                            style="@style/TextLogin"
+                            android:lines="10"
+                            android:scrollHorizontally="false"
+                            android:scrollbars="vertical"
+                            android:textSize="15sp"
+                            android:id="@+id/etComent1" />
+                    </RadioGroup>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="56dp">
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GUARDAR ENCUESTA"
+                android:id="@+id/btGuardar"
+                android:drawableRight="@drawable/ic_sync"
+                style="@style/BottonBase" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</ScrollView>
+
+
