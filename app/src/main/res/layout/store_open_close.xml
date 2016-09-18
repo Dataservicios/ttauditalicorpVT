@@ -112,6 +112,66 @@
                         android:textSize="15sp"
                         android:id="@+id/etComent1" />
                 </RadioGroup>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:visibility="invisible"
+                android:id="@+id/lyOpenClose2">
+
+                <RadioGroup
+                    android:id="@+id/rgOpt2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentLeft="true"
+                    android:layout_above="@+id/fbplacename"
+                    android:visibility="visible"
+                    android:clickable="true">
+
+                    <RadioButton
+                        android:id="@+id/rbA2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="e"
+                        android:text="No está el encargado" />
+
+                    <RadioButton
+                        android:id="@+id/rbB2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No deseo trabajar con Alicorp VT"
+                        android:tag="f"
+                        android:enabled="true" />
+
+
+                    <RadioButton
+                        android:id="@+id/rbC2"
+                        android:layout_width="wrap_content"
+                        android:tag="g"
+                        android:layout_height="wrap_content"
+                        android:text="Si deseo trabajar con Alicorp VT" />
+
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:inputType="textMultiLine"
+                        android:ems="10"
+                        android:enabled="true"
+                        android:visibility="visible"
+                        style="@style/TextLogin"
+                        android:lines="10"
+                        android:scrollHorizontally="false"
+                        android:scrollbars="vertical"
+                        android:textSize="15sp"
+                        android:id="@+id/etComent2" />
+                </RadioGroup>
             </LinearLayout>
             <LinearLayout
                 android:orientation="vertical"

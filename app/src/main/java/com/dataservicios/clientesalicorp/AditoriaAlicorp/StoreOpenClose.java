@@ -46,22 +46,22 @@ public class StoreOpenClose extends Activity {
 
     private Switch sw_open ;
     private Button bt_photo, bt_guardar;
-    private EditText et_Comentario,etComent1;
+    private EditText et_Comentario,etComent1,etComent2;
     private TextView tv_Pregunta;
-    private LinearLayout  lyOpenClose, lyAuditoria;
+    private LinearLayout  lyOpenClose, lyOpenClose2;
 
-    private String tipo,cadenaruc, fechaRuta, comentario="", type, region;
+    private String tipo,cadenaruc, fechaRuta, comentario="",comentario2="", type, region;
 
     private Integer user_id, company_id,store_id,rout_id,audit_id, product_id, poll_id, poll_id2;
 
-    int  is_open=0 ;
+    int  is_open=0, is_trabaja_vt = 0 ;
 
     private DatabaseHelper db;
     private ProgressDialog pDialog;
-    private RadioGroup rgOpt1;
+    private RadioGroup rgOpt1,rgOpt2;
     private String opt1="";
 
-    private RadioButton[] radioButton1Array;
+    private RadioButton[] radioButton1Array,radioButton2Array;
     private PollDetail mPollDetail;
     private Audit mAudit;
 
@@ -79,7 +79,9 @@ public class StoreOpenClose extends Activity {
 
         //lyAuditoria = (LinearLayout) findViewById(R.id.lyAuditoria);
         lyOpenClose = (LinearLayout) findViewById(R.id.lyOpenClose);
+        lyOpenClose2 = (LinearLayout) findViewById(R.id.lyOpenClose2);
         rgOpt1=(RadioGroup) findViewById(R.id.rgOpt1);
+        rgOpt2=(RadioGroup) findViewById(R.id.rgOpt2);
 
         radioButton1Array = new RadioButton[] {
                 (RadioButton) findViewById(R.id.rbA1),
@@ -88,12 +90,19 @@ public class StoreOpenClose extends Activity {
                 (RadioButton) findViewById(R.id.rbD1),
         };
 
+        radioButton2Array = new RadioButton[] {
+                (RadioButton) findViewById(R.id.rbA2),
+                (RadioButton) findViewById(R.id.rbB2),
+                (RadioButton) findViewById(R.id.rbC2),
+        };
+
 
         tv_Pregunta = (TextView) findViewById(R.id.tvPregunta);
         bt_guardar = (Button) findViewById(R.id.btGuardar);
         bt_photo = (Button) findViewById(R.id.btPhoto);
         //et_Comentario = (EditText) findViewById(R.id.etComentario);
         etComent1 = (EditText) findViewById(R.id.etComent1);
+        etComent2 = (EditText) findViewById(R.id.etComent2);
 
         Bundle bundle = getIntent().getExtras();
         company_id = GlobalConstant.company_id;
@@ -154,9 +163,13 @@ public class StoreOpenClose extends Activity {
 
                     lyOpenClose.setVisibility(View.INVISIBLE);
                     lyOpenClose.setEnabled(false);
-
-                    //clearRadioButtonCheck(radioButton1Array, false);
                     rgOpt1.clearCheck();
+
+                    lyOpenClose2.setVisibility(View.VISIBLE);
+                    lyOpenClose2.setEnabled(true);
+                    rgOpt2.clearCheck();
+                    etComent2.setText("");
+                    opt1 ="";
 
                 } else {
                     is_open = 0;
@@ -165,9 +178,14 @@ public class StoreOpenClose extends Activity {
 
                     lyOpenClose.setVisibility(View.VISIBLE);
                     lyOpenClose.setEnabled(true);
-
-                    //clearRadioButtonCheck(radioButton1Array, false);
                     rgOpt1.clearCheck();
+
+
+                    lyOpenClose2.setVisibility(View.INVISIBLE);
+                    lyOpenClose2.setEnabled(false);
+                    rgOpt2.clearCheck();
+                    etComent2.setText("");
+                    opt1 ="";
                 }
             }
         });
@@ -205,6 +223,32 @@ public class StoreOpenClose extends Activity {
 
                         }
 
+                } else {
+
+                    long id1 = rgOpt2.getCheckedRadioButtonId();
+                    if (id1 == -1){
+                        Toast.makeText(MyActivity,"Selecione una opción?" , Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    else{
+                        for (int x = 0; x < radioButton2Array.length; x++) {
+                            if(id1 ==  radioButton2Array[x].getId())  {
+                                opt1 = poll_id.toString() + radioButton2Array[x].getTag();
+                                comentario2 = String.valueOf(etComent2.getText()) ;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                if(radioButton2Array[2].isChecked())
+                {
+                    is_trabaja_vt = 1 ;
+                } else {
+                    is_trabaja_vt = 0 ;
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MyActivity);
@@ -226,7 +270,7 @@ public class StoreOpenClose extends Activity {
                         mPollDetail.setComment(0);
                         mPollDetail.setResult(is_open);
                         mPollDetail.setLimite(0);
-                        mPollDetail.setComentario("");
+                        mPollDetail.setComentario(comentario2);
                         mPollDetail.setAuditor(user_id);
                         mPollDetail.setProduct_id(0);
                         mPollDetail.setPublicity_id(0);
@@ -290,26 +334,36 @@ public class StoreOpenClose extends Activity {
 
             PollDetail mPD = params[0] ;
 
-            if(!AuditAlicorp.insertPollDetail(mPD)) return false;
+            String time_close = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss").format(new Date());
+            mAudit = new Audit();
+            mAudit.setCompany_id(GlobalConstant.company_id);
+            mAudit.setStore_id(store_id);
+            mAudit.setId(audit_id);
+            mAudit.setRoute_id(rout_id);
+            mAudit.setUser_id(user_id);
+            mAudit.setLatitude_close("");
+            mAudit.setLongitude_close("");
+            mAudit.setLatitude_open(String.valueOf(GlobalConstant.latitude_open));
+            mAudit.setLongitude_open(String.valueOf(GlobalConstant.longitude_open));
+            mAudit.setTime_open(GlobalConstant.inicio);
+            mAudit.setTime_close(time_close);
 
-            if(is_open == 0) {
+            if(is_open == 1) {
 
-                String time_close = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss").format(new Date());
-                mAudit = new Audit();
-                mAudit.setCompany_id(GlobalConstant.company_id);
-                mAudit.setStore_id(store_id);
-                mAudit.setId(audit_id);
-                mAudit.setRoute_id(rout_id);
-                mAudit.setUser_id(user_id);
-                mAudit.setLatitude_close("");
-                mAudit.setLongitude_close("");
-                mAudit.setLatitude_open(String.valueOf(GlobalConstant.latitude_open));
-                mAudit.setLongitude_open(String.valueOf(GlobalConstant.longitude_open));
-                mAudit.setTime_open(GlobalConstant.inicio);
-                mAudit.setTime_close(time_close);
+                if(is_trabaja_vt == 1){
+                    if(!AuditAlicorp.insertPollDetail(mPD)) return false;
+                } else {
+                    if(!AuditAlicorp.insertPollDetail(mPD)) return false;
+                    if(!AuditAlicorp.closeAuditRoadStore(mAudit)) return false;
+                    if(!AuditAlicorp.closeAuditRoadAll(mAudit)) return false;
+                }
 
+            } else{
+
+                if(!AuditAlicorp.insertPollDetail(mPD)) return false;
                 if(!AuditAlicorp.closeAuditRoadStore(mAudit)) return false;
                 if(!AuditAlicorp.closeAuditRoadAll(mAudit)) return false;
+
             }
 
 
@@ -325,6 +379,7 @@ public class StoreOpenClose extends Activity {
                 // loadLoginActivity();
                 if(is_open==1) {
 
+                    if(is_trabaja_vt == 1){
                         Bundle argRuta = new Bundle();
                         argRuta.clear();
                         argRuta.putInt("idPDV", store_id);
@@ -339,6 +394,18 @@ public class StoreOpenClose extends Activity {
                         intent.putExtras(argRuta);
                         startActivity(intent);
                         finish();
+                    } else {
+                        Bundle argRuta = new Bundle();
+                        argRuta.clear();
+                        argRuta.putInt("store_id", store_id);
+                        argRuta.putInt("rout_id", rout_id);
+                        Intent intent;
+                        intent = new Intent(MyActivity, Ubicacion.class);
+                        intent.putExtras(argRuta);
+                        startActivity(intent);
+                        finish();
+                    }
+
 
                 } else if(is_open==0){
                     Bundle argRuta = new Bundle();

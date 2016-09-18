@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Hora de Contácto"
+                android:text=" Hora de Contácto (Formato de 24 horas)"
                 android:id="@+id/tvHoraContacto" />
         </LinearLayout>
 
@@ -43,13 +43,20 @@
                 <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Desde"
+                android:text="Desde (Ej. 18:15)"
                 />
 
-                <TimePicker
+                <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/timePicker" />
+                    android:inputType="time"
+                    android:ems="10"
+                    android:id="@+id/etDesdeTime" />
+
+                <!--<TimePicker-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/timePicker" />-->
 
             </LinearLayout>
         </LinearLayout>
@@ -71,12 +78,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hasta"
+                    android:text="Hasta (Ej. 18:15)"
                     />
-                <TimePicker
+
+                <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/timePicker2" />
+                    android:inputType="time"
+                    android:ems="10"
+                    android:id="@+id/etHastaTime" />
+
+                <!--<TimePicker-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/timePicker2" />-->
 
             </LinearLayout>
         </LinearLayout>

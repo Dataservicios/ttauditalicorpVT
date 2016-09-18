@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class HoraContacto extends Activity {
     private ProgressDialog pDialog;
     private SessionManager session;
     private PollDetail mPollDetail;
+    private EditText etDesdeTime, etHastaTime ;
 
 
     @Override
@@ -74,9 +76,27 @@ public class HoraContacto extends Activity {
         btGuardar = (Button) findViewById(R.id.btGuardar);
 
 
+         etDesdeTime = (EditText) findViewById(R.id.etDesdeTime);
+         etHastaTime = (EditText) findViewById(R.id.etHastaTime);
+
+
+
         btGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                if (etDesdeTime.getText().equals("")) {
+                    Toast.makeText(MyActivity, "Ingrese la Hora",Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (etHastaTime.getText().equals("")) {
+                    Toast.makeText(MyActivity, "Ingrese la Hora",Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MyActivity);
                 builder.setTitle("Guardar Ventana");
@@ -88,13 +108,17 @@ public class HoraContacto extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        TimePicker timePicker = (TimePicker)findViewById(R.id.timePicker);
-                        TimePicker timePicker2 = (TimePicker)findViewById(R.id.timePicker2);
+//                        TimePicker timePicker = (TimePicker)findViewById(R.id.timePicker);
+//                        TimePicker timePicker2 = (TimePicker)findViewById(R.id.timePicker2);
+
+
+
+
+
 
 
 //                        Integer hora = timePicker.getHour();
 //                        Integer minute = timePicker.getMinute();
-
 
 
                         Integer horaDesde  ;
@@ -105,53 +129,55 @@ public class HoraContacto extends Activity {
                         String dobStr ;
                         String am_pm_desde;
                         String am_pm_hasta;
-
-                        if(Build.VERSION.SDK_INT > 20) {
-                            horaDesde = timePicker.getHour();
-                            minuteDesde = timePicker.getMinute();
-
-                            horaHasta = timePicker2.getHour();
-                            minuteHasta = timePicker2.getMinute();
-
-                            if (horaDesde < 12 ) {
-                                if (horaDesde == 0) horaDesde = 12;
-                                am_pm_desde = "AM";
-                            }
-                            else {
-                                if (horaDesde != 12)
-                                    horaDesde-=12;
-                                am_pm_desde = "PM";
-                            }
-
-                            if (horaHasta < 12 ) {
-                                if (horaHasta == 0) horaHasta = 12;
-                                am_pm_hasta = "AM";
-                            }
-                            else {
-                                if (horaHasta != 12)
-                                    horaHasta-=12;
-                                    am_pm_hasta = "PM";
-                            }
-                            //Integer dobDate = timePicker.get();
-
-                            sb.append(horaDesde.toString()).append(":").append(minuteDesde.toString()).append(" ").append(am_pm_desde).append(" - ").append(horaHasta.toString()).append(":").append(minuteHasta.toString()).append(" ").append(am_pm_hasta);
-                            dobStr=sb.toString();
-
-                        } else {
-                            horaDesde = timePicker2.getCurrentHour();
-                            minuteDesde = timePicker.getCurrentMinute();
-
-                            horaHasta = timePicker.getCurrentHour();
-                            minuteHasta = timePicker2.getCurrentMinute();
-
-                            sb.append(horaDesde.toString()).append(":").append(minuteDesde.toString()).append(" - ").append(horaHasta.toString()).append(":").append(minuteHasta.toString());
-                            dobStr=sb.toString();
-                        }
-
-
+//
+//                        if(Build.VERSION.SDK_INT > 21) {
+//
+//                            horaDesde = timePicker.getHour();
+//                            minuteDesde = timePicker.getMinute();
+//                            horaHasta = timePicker2.getHour();
+//                            minuteHasta = timePicker2.getMinute();
+//                            if (horaDesde < 12 ) {
+//                                if (horaDesde == 0) horaDesde = 12;
+//                                am_pm_desde = "AM";
+//                            }
+//                            else {
+//                                if (horaDesde != 12)
+//                                    horaDesde-=12;
+//                                am_pm_desde = "PM";
+//                            }
+//
+//                            if (horaHasta < 12 ) {
+//                                if (horaHasta == 0) horaHasta = 12;
+//                                am_pm_hasta = "AM";
+//                            }
+//                            else {
+//                                if (horaHasta != 12)
+//                                    horaHasta-=12;
+//                                    am_pm_hasta = "PM";
+//                            }
+//                            //Integer dobDate = timePicker.get();
+//
+//                            sb.append(horaDesde.toString()).append(":").append(minuteDesde.toString()).append(" ").append(am_pm_desde).append(" - ").append(horaHasta.toString()).append(":").append(minuteHasta.toString()).append(" ").append(am_pm_hasta);
+//                            dobStr=sb.toString();
+//
+//                        } else {
+//
+//                            horaDesde = timePicker2.getCurrentHour();
+//                            minuteDesde = timePicker.getCurrentMinute();
+//
+//                            horaHasta = timePicker.getCurrentHour();
+//                            minuteHasta = timePicker2.getCurrentMinute();
+//
+//                            sb.append(horaDesde.toString()).append(":").append(minuteDesde.toString()).append(" - ").append(horaHasta.toString()).append(":").append(minuteHasta.toString());
+//                            dobStr=sb.toString();
+//                        }
 
 
 
+
+
+
+                        dobStr = etDesdeTime.getText().toString() +  " - " + etHastaTime.getText().toString();
 
                         Toast toast;
                         toast = Toast.makeText(MyActivity, dobStr , Toast.LENGTH_LONG);

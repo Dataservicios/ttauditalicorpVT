@@ -355,7 +355,7 @@ public class DetallePdv extends FragmentActivity {
                                             tvTelephone.setText(obj.getString("telephone"));
                                             tvCell.setText(obj.getString("cell"));
                                             tvCodigo.setText(obj.getString("codclient")); // Poner Codigo liente
-                                            tvComment.setText(obj.getString("commente"));
+                                            tvComment.setText(obj.getString("comment"));
                                             latitude= Double.valueOf(obj.getString("latitude"))  ;
                                             longitude= Double.valueOf(obj.getString("longitude"));
                                             map.clear();
