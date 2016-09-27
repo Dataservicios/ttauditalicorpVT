@@ -28,6 +28,7 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -158,7 +160,6 @@ public class AuditAlicorp {
         return true;
     }
 
-
     /**
      * Insert table poll_Details
      * @param pollDetail Model PollDetail
@@ -261,10 +262,6 @@ public class AuditAlicorp {
         return true;
     }
 
-
-
-
-
     /**
      * Close audit
      * @param audit
@@ -360,6 +357,66 @@ public class AuditAlicorp {
         }
         return true;
 
+    }
+
+    public static ArrayList<Pdv> getLisStores(int rout_id, int company_id){
+        int success ;
+
+        ArrayList<Pdv> listaPdv = new ArrayList<Pdv>();
+        try {
+
+            HashMap<String, String> params = new HashMap<>();
+
+            params.put("id", String.valueOf(rout_id));
+            params.put("company_id", String.valueOf(company_id));
+
+            JSONParserX jsonParser = new JSONParserX();
+            // getting product details by making HTTP request
+            JSONObject json = jsonParser.makeHttpRequest(GlobalConstant.dominio + "/JsonRoadsDetail" ,"POST", params);
+            // check your log for json response
+            Log.d("Login attempt", json.toString());
+            // json success, tag que retorna el json
+            if (json == null) {
+                Log.d("JSON result", "Está en nullo");
+
+            } else{
+                success = json.getInt("success");
+                if (success == 1) {
+                    JSONArray ObjJson;
+                    ObjJson = json.getJSONArray("roadsDetail");
+                    // looping through All Products
+                    if(ObjJson.length() > 0) {
+
+                        for (int i = 0; i < ObjJson.length(); i++) {
+
+                            JSONObject obj = ObjJson.getJSONObject(i);
+                            Pdv pdv = new Pdv();
+                            pdv.setId(Integer.valueOf(obj.getString("id")));
+                            pdv.setPdv(obj.getString("fullname"));
+                            //pdv.setThumbnailUrl(obj.getString("image"));
+                            pdv.setDireccion(obj.getString("address"));
+                            pdv.setDistrito(obj.getString("district"));
+                            pdv.setType(obj.getString("type"));
+                            pdv.setRegion(obj.getString("region"));
+                            pdv.setTypeBodega(obj.getString("tipo_bodega"));
+                            pdv.setComment(obj.getString("comment"));
+                            pdv.setCodClient(obj.getString("codclient"));
+                            pdv.setStatus(Integer.valueOf(obj.getString("status")));
+                            listaPdv.add(i,pdv);
+                        }
+
+                    }
+                    Log.d(LOG_TAG, "Ingresado correctamente");
+                }else{
+                    Log.d(LOG_TAG, "No se ingreso el registro");
+                    //return false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // return false;
+        }
+        return  listaPdv;
     }
 
 }

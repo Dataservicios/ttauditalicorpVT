@@ -3,6 +3,7 @@ package com.dataservicios.clientesalicorp;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import com.dataservicios.clientesalicorp.Model.Pdv;
 import com.dataservicios.clientesalicorp.SQLite.DatabaseHelper;
 import com.dataservicios.clientesalicorp.adapter.PdvsAdapter;
 import com.dataservicios.clientesalicorp.app.AppController;
+import com.dataservicios.clientesalicorp.util.AuditAlicorp;
 import com.dataservicios.clientesalicorp.util.GPSTracker;
 import com.dataservicios.clientesalicorp.util.GlobalConstant;
 import com.dataservicios.clientesalicorp.util.SessionManager;
@@ -158,7 +160,6 @@ public class PuntosVenta extends Activity {
                     // Indicar al Usuario que Habilite su GPS
                     gps.showSettingsAlert();
                 }
-
                 // selected item
                 String selected = ((TextView) view.findViewById(R.id.tvId)).getText().toString();
                 store_id= Integer.valueOf(selected);
@@ -170,7 +171,6 @@ public class PuntosVenta extends Activity {
                 if (comment.equals("Bodega Alto Tráfico"))   typeBodega_id = "3";
 
 
-
                 Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(store_id) , Toast.LENGTH_SHORT);
                 toast.show();
                 Bundle argPDV = new Bundle();
@@ -179,7 +179,6 @@ public class PuntosVenta extends Activity {
                 argPDV.putString("fechaRuta", fechaRuta);
                 argPDV.putString("region",region);
                 //argPDV.putString("comment", comment);
-
                 //Intent intent = new Intent("dataservicios.com.ttauditalicorp.DETALLEPDV");
                 //Intent intent = new Intent(MyActivity, TipoDex.class);
                 Intent intent = new Intent(MyActivity, StoreOpenClose.class);
@@ -187,98 +186,86 @@ public class PuntosVenta extends Activity {
                 startActivity(intent);
 
 
-
             }
         });
         listView.setAdapter(adapter);
 
-        //pDialog = new ProgressDialog(this);
-        // Showing progress dialog before making http request
-       // pDialog.setMessage("Loading...");
-        pDialog.show();
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST , GlobalConstant.dominio + "/JsonRoadsDetail" ,params,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response)
-                    {
-//
-                        Log.d("DATAAAA", response.toString());
-                        //adapter.notifyDataSetChanged();
-                        try {
-                            //String agente = response.getString("agentes");
-                            int success =  response.getInt("success");
-                            float contadorPDVS =0 ;
-                            float auditadosPDV =0;
-                            if (success == 1) {
-//
-                                JSONArray ObjJson;
-                                ObjJson = response.getJSONArray("roadsDetail");
-                                // looping through All Products
-                                if(ObjJson.length() > 0) {
+        new loadStores().execute();
 
-                                    contadorPDVS = contadorPDVS + Integer.valueOf(response.getString("pdvs"));
-                                    auditadosPDV =  auditadosPDV + Integer.valueOf(response.getString("auditados"));
-
-                                    for (int i = 0; i < ObjJson.length(); i++) {
-
-                                        try {
-
-                                            JSONObject obj = ObjJson.getJSONObject(i);
-                                            Pdv pdv = new Pdv();
-                                            pdv.setId(Integer.valueOf(obj.getString("id")));
-                                            pdv.setPdv(obj.getString("fullname"));
-                                            //pdv.setThumbnailUrl(obj.getString("image"));
-                                            pdv.setDireccion(obj.getString("address"));
-                                            pdv.setDistrito(obj.getString("district"));
-                                            pdv.setCodClient(obj.getString("codclient")); //Poner código
-                                            pdv.setRegion(obj.getString("region"));
-                                            pdv.setComment(obj.getString("comment"));
-                                            pdv.setStatus(obj.getInt("status"));
-
-//
-                                            // adding movie to movies array
-                                            pdvList.add(pdv);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-
-                                    pdvs1.setText(String.valueOf(contadorPDVS)) ;
-                                    pdvsAuditados1.setText(String.valueOf(auditadosPDV));
-
-                                    float porcentajeAvance=(auditadosPDV / contadorPDVS) *100;
-                                    BigDecimal big = new BigDecimal(porcentajeAvance);
-                                    big = big.setScale(2, RoundingMode.HALF_UP);
-                                    porcentajeAvance1.setText( String.valueOf(big) + " % ");
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            hidePDialog();
-                        }
-
-                        adapter.notifyDataSetChanged();
-                        hidePDialog();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "Error: " + error.getMessage());
-                        hidePDialog();
-                    }
-                }
-        );
-
-
-        AppController.getInstance().addToRequestQueue(jsObjRequest);
     }
 
 
 
+    class loadStores extends AsyncTask<Void, Integer, ArrayList<Pdv>> {
+        /**
+         * Antes de comenzar en el hilo determinado, Mostrar progresión
+         */
+        boolean failure = false;
 
+        @Override
+        protected void onPreExecute() {
+            //tvCargando.setText("Cargando Product...");
+
+            pDialog = new ProgressDialog(MyActivity);
+            pDialog.setMessage("Cargando...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ArrayList<Pdv> doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            ArrayList<Pdv> listPdv = new ArrayList<Pdv>();
+            listPdv = AuditAlicorp.getLisStores(IdRuta, GlobalConstant.company_id);
+            return listPdv;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         **/
+        protected void onPostExecute(ArrayList<Pdv> pdvs) {
+            // dismiss the dialog once product deleted
+            hidepDialog();
+
+            if (pdvs.isEmpty()) {
+//                Toast.makeText(TimelineActivity.this, getResources().getString(R.string.label_tweets_not_found),
+//                        Toast.LENGTH_SHORT).show();
+
+                //pdvList.addAll(pdvs);
+            } else {
+//                updateListView(tweets);
+//                Toast.makeText(TimelineActivity.this, getResources().getString(R.string.label_tweets_downloaded),
+//                        Toast.LENGTH_SHORT).show();
+
+
+                float contadorStore = pdvs.size();
+                float auditadosStore = 0;
+
+
+                for (int i = 0; i < pdvs.size(); i++) {
+
+                    if(pdvs.get(i).getStatus() == 1) {
+                        auditadosStore ++;
+                    }
+                }
+
+
+                pdvs1.setText(String.valueOf(contadorStore)) ;
+                pdvsAuditados1.setText(String.valueOf(auditadosStore));
+
+                float porcentajeAvance=(auditadosStore / contadorStore) *100;
+                BigDecimal big = new BigDecimal(porcentajeAvance);
+                big = big.setScale(2, RoundingMode.HALF_UP);
+                porcentajeAvance1.setText( String.valueOf(big) + " % ");
+
+                pdvList.addAll(pdvs);
+                adapter.notifyDataSetChanged();
+            }
+
+        }
+    }
 
 
 
